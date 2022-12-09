@@ -52,35 +52,11 @@ entity neorv32_iCEBreaker_BoardTop_MinimalBoot is
     -- UART0
     iCEBreakerv10_RX : in std_logic;
     iCEBreakerv10_TX : out std_logic;
-
-
-    iCEBreakerv10_BTN_N : in std_logic;
-    /*
     -- Buttons
     iCEBreakerv10_BTN_N : in std_logic;
     iCEBreakerv10_PMOD2_9_Button_1 : in std_logic;
     iCEBreakerv10_PMOD2_4_Button_2 : in std_logic;
-    iCEBreakerv10_PMOD2_10_Button_3 : in std_logic;
-    -- LEDs
-    iCEBreakerv10_LED_R_N : out std_logic;
-    iCEBreakerv10_LED_G_N : out std_logic;
-    iCEBreakerv10_PMOD2_1_LED_left : out std_logic;
-    iCEBreakerv10_PMOD2_2_LED_right : out std_logic;
-    iCEBreakerv10_PMOD2_8_LED_up : out std_logic;
-    iCEBreakerv10_PMOD2_3_LED_down : out std_logic;
-    iCEBreakerv10_PMOD2_7_LED_center : out std_logic;
-    */
-    -- Keyboard columns
-    iCEBreakerv10_PMOD1A_1 : out std_logic;
-    iCEBreakerv10_PMOD1A_2 : out std_logic;
-    iCEBreakerv10_PMOD1A_3 : out std_logic;
-    iCEBreakerv10_PMOD1A_4 : out std_logic;
-
-    -- Keyboard rows
-    iCEBreakerv10_PMOD1A_7 : in std_logic;
-    iCEBreakerv10_PMOD1A_8 : in std_logic;
-    iCEBreakerv10_PMOD1A_9 : in std_logic;
-    iCEBreakerv10_PMOD1A_10 : in std_logic
+    iCEBreakerv10_PMOD2_10_Button_3 : in std_logic
   );
 end entity;
 
@@ -153,14 +129,6 @@ architecture neorv32_iCEBreaker_BoardTop_MinimalBoot_rtl of neorv32_iCEBreaker_B
   signal wb_lock_m2s: std_ulogic;                     -- exclusive access request
   signal wb_ack_s2m : std_ulogic;                     -- transfer acknowledge
   signal wb_err_s2m : std_ulogic;                     -- transfer error
-
-  signal operando_1_s : std_ulogic_vector(31 downto 0);
-  signal operando_2_s : std_ulogic_vector(31 downto 0);
-  signal funcion_s    : std_ulogic_vector(31 downto 0);
-  signal resultado_s  : std_ulogic_vector(31 downto 0);
-
-  signal row_s  : std_ulogic_vector(3 downto 0);
-  signal column_s  : std_ulogic_vector(3 downto 0);
 
 
 begin
@@ -315,7 +283,7 @@ begin
   -- -------------------------------------------------------------------------------------------
   -- Instance the pheripheral
   -- -------------------------------------------------------------------------------------------
-/*
+
   wb_regs_inst : entity neorv32.wb_regs
     generic map(
       WB_ADDR_BASE => x"80002000", --mirando dmem_size=8*1024 bytes -> start 80millones + 8192 -> en hex x"..." (primer hueco de memoria libre)
@@ -332,59 +300,12 @@ begin
       wb_stb_i  => wb_stb_m2s, -- strobe
       wb_cyc_i  => wb_cyc_m2s, -- valid cycle
       wb_ack_o  => wb_ack_s2m, -- transfer acknowledge
-      wb_err_o  => wb_err_s2m, -- transfer error 
-
-    -- calculator i/o --
-      dat_reg_0 => operando_1_s, -- register 1 data output
-      dat_reg_1 => operando_2_s, -- register 2 data output
-      dat_reg_2 => funcion_s, -- register 3 data output
-      dat_reg_3 => resultado_s  -- register 4 data input
+      wb_err_o  => wb_err_s2m -- transfer error 
     );
 
-  calculadora_inst : entity neorv32.calculadora
-    port map(
-      operando_1  => operando_1_s(9 downto 0),
-      operando_2  => operando_2_s(9 downto 0),
-      funcion     => funcion_s(1 downto 0),
-      resultado   => resultado_s
-    );
-*/
-
-driver_teclado_inst : entity neorv32.driver_teclado
-  generic map(
-    WB_ADDR_DRIVER => x"80002010" -- driver address
-  )
-  port map(
-    -- wishbone host interface --
-    wb_clk_i => std_ulogic(iCEBreakerv10_CLK), -- clock
-    wb_rstn_i => std_ulogic(iCEBreakerv10_BTN_N), -- reset, async, low-active
-    wb_adr_i => wb_adr_m2s, -- address
-    wb_dat_i => wb_dat_m2s, -- read data
-    wb_dat_o => wb_dat_s2m, -- write data
-    wb_we_i => wb_we_m2s, -- read/write
-    wb_sel_i => wb_sel_m2s, -- byte enable
-    wb_stb_i => wb_stb_m2s, -- strobe
-    wb_cyc_i => wb_cyc_m2s, -- valid cycle
-    wb_ack_o => wb_ack_s2m, -- transfer acknowledge
-    wb_err_o => wb_err_s2m, -- transfer error 
-    -- rows/columns keypad i/o --
-    rows => row_s,
-    columns => column_s
-  );
 
   -- -------------------------------------------------------------------------------------------
   -- IO Connections
   -- -------------------------------------------------------------------------------------------
-      --outputs columns--
-  iCEBreakerv10_PMOD1A_4 <= column_s(0);
-  iCEBreakerv10_PMOD1A_3 <= column_s(1);
-  iCEBreakerv10_PMOD1A_2 <= column_s(2);
-  iCEBreakerv10_PMOD1A_1 <= column_s(3);
 
-  --inputs rows--
-  row_s(0) <= iCEBreakerv10_PMOD1A_10;
-  row_s(1) <= iCEBreakerv10_PMOD1A_9;
-  row_s(2) <= iCEBreakerv10_PMOD1A_8;
-  row_s(3) <= iCEBreakerv10_PMOD1A_7;
-    
 end architecture;
