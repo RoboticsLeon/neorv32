@@ -4,7 +4,7 @@ make BOARD=iCEBreaker MinimalBoot
 iceprog neorv32_iCEBreaker_MinimalBoot.bit
 cd ~/neorv32/sw/example/$1
 make exe
-cutecom &
+cutecom
 echo "\n\n"
 echo "----------------------------------------------------------------------------------------------------------"
 echo "open & reset board & send any character via UART"

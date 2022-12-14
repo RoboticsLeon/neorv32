@@ -53,30 +53,7 @@ entity neorv32_iCEBreaker_BoardTop_MinimalBoot is
     iCEBreakerv10_RX : in std_logic;
     iCEBreakerv10_TX : out std_logic;
     -- Buttons
-    iCEBreakerv10_BTN_N : in std_logic;
-    iCEBreakerv10_PMOD2_9_Button_1 : in std_logic;
-    iCEBreakerv10_PMOD2_4_Button_2 : in std_logic;
-    iCEBreakerv10_PMOD2_10_Button_3 : in std_logic;
-    -- LEDs
-    iCEBreakerv10_LED_R_N : out std_logic;
-    iCEBreakerv10_LED_G_N : out std_logic;
-    iCEBreakerv10_PMOD2_1_LED_left : out std_logic;
-    iCEBreakerv10_PMOD2_2_LED_right : out std_logic;
-    iCEBreakerv10_PMOD2_8_LED_up : out std_logic;
-    iCEBreakerv10_PMOD2_3_LED_down : out std_logic;
-    iCEBreakerv10_PMOD2_7_LED_center : out std_logic;
-
-    -- Keyboard columns
-    iCEBreakerv10_PMOD1A_1 : out std_logic;
-    iCEBreakerv10_PMOD1A_2 : out std_logic;
-    iCEBreakerv10_PMOD1A_3 : out std_logic;
-    iCEBreakerv10_PMOD1A_4 : out std_logic;
-
-    -- Keyboard rows
-    iCEBreakerv10_PMOD1A_7 : in std_logic;
-    iCEBreakerv10_PMOD1A_8 : in std_logic;
-    iCEBreakerv10_PMOD1A_9 : in std_logic;
-    iCEBreakerv10_PMOD1A_10 : in std_logic
+    iCEBreakerv10_BTN_N : in std_logic
   );
 end entity;
 
@@ -311,7 +288,7 @@ begin
 
   wb_regs_inst : entity neorv32.wb_regs
     generic map(
-      WB_ADDR_BASE => x"80002000", --mirando dmem_size=8*1024 bytes -> start 80millones + 8192 -> en hex x"..." (primer hueco de memoria libre)
+      WB_ADDR_BASE => x"80010000", --mirando dmem_size=8*1024 bytes -> start 80millones + 8192 -> en hex x"..." (primer hueco de memoria libre)
       WB_ADDR_SIZE => 16          -- tenemos 4 registros (mirar wb_regs.vhd) disponibles de 32 bits (4 bytes) cada uno -> 4x4=16 bytes de memoria necesarios, acceso de escritura/lecutra mínimo de 4 bytes
     )
     port map(

@@ -2,9 +2,6 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-library neorv32;
-use neorv32.neorv32_package.all;
-
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --use IEEE.NUMERIC_STD.ALL;
@@ -39,7 +36,7 @@ begin
               resultado(31 downto 11) <=(others => '0');
             when 2 => --multiplicar
               resultado(21 downto 0) <= std_ulogic_vector(operando_1_s*operando_2_s);
-              resultado(31 downto 0) <= (others => '0');
+              resultado(31 downto 22) <= (others => '0');
             when others =>
               resultado <= (others => '0');
           end case;

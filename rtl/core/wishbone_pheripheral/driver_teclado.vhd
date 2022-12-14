@@ -2,8 +2,6 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
 
-library neorv32;
-use neorv32.neorv32_package.all;
 
 entity driver_teclado is
   generic (
@@ -39,15 +37,18 @@ architecture Behavioral of driver_teclado is
   signal p_datos : std_ulogic_vector(15 downto 0);
 
 begin
-  comb : process (contador, datos, columns_s, cont_columns, wb_cyc_i, wb_stb_i, wb_adr_i)
+  comb : process (contador, datos, columns_s, cont_columns, rows, wb_cyc_i, wb_stb_i, wb_adr_i)
   begin
 
     p_contador <= contador + 1;
+    -- Valores por defecto (los próximos serán los actuales)
+    p_columns_s <= columns_s;
+    p_cont_columns <= cont_columns;
+    p_datos <= datos;
 
     -- Cada vez que desborda, se leen filas y se cambian columnas (5ms)
     if (contador = 0) then
 
-      p_datos <= datos; --Por defecto los proximos datos serán los actuales
       --Lee filas
       case to_integer(unsigned(cont_columns)) is
         when 0 => --Column 0
@@ -83,7 +84,6 @@ begin
 
       --Apunta columna por la que vamos
       p_cont_columns <= cont_columns + 1;
-
     end if;
 
     if (wb_cyc_i = '1') and (wb_stb_i = '1') and (wb_adr_i = WB_ADDR_DRIVER) then

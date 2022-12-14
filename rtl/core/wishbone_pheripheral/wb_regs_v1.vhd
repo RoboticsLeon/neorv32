@@ -51,7 +51,7 @@ architecture wb_regs_rtl of wb_regs is
   signal reg0, p_reg0 : std_ulogic_vector(31 downto 0);
   signal reg1, p_reg1 : std_ulogic_vector(31 downto 0);
   signal reg2, p_reg2 : std_ulogic_vector(31 downto 0);
-  signal reg3         : std_ulogic_vector(31 downto 0);
+  signal reg3 : std_ulogic_vector(31 downto 0);
 
 begin
 
@@ -64,6 +64,12 @@ begin
   -- Device Access? -------------------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
   access_req <= '1' when ((wb_adr_i and (not addr_mask_c)) = (WB_ADDR_BASE and (not addr_mask_c))) else '0';
+
+  -- Direct connection
+  dat_reg_0 <= reg0;
+  dat_reg_1 <= reg1;
+  dat_reg_2 <= reg2;
+  reg3 <= dat_reg_3;
 
   -- Combinatorial process. Implement read and write Wishbone bus cycles
   -- -------------------------------------------------------------------------------------------
@@ -120,9 +126,9 @@ begin
   sync : process (wb_rstn_i, wb_clk_i)
   begin
     if wb_rstn_i = '0' then
-      reg0 <= x"1"; --(others => '0');
-      reg1 <= x"1"; --(others => '0');
-      reg2 <= x"0"; --(others => '0');
+      reg0 <= x"ACCEDE00"; --(others => '0');
+      reg1 <= x"DEC0DE01"; --(others => '0');
+      reg2 <= x"C0FFEE02"; --(others => '0');
     elsif rising_edge(wb_clk_i) then
       reg0 <= p_reg0;
       reg1 <= p_reg1;
@@ -133,11 +139,5 @@ begin
   -- Errors can not happen in this module
   -- -------------------------------------------------------------------------------------------
   wb_err_o <= '0';
-
-  -- Direct connection
-  dat_reg_0 <= reg0;
-  dat_reg_1 <= reg1;
-  dat_reg_2 <= reg2;
-  reg3 <= dat_reg_3;
 
 end wb_regs_rtl;

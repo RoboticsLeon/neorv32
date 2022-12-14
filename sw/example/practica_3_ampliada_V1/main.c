@@ -3,7 +3,7 @@
 #include <neorv32.h>
 
 #define BAUD_RATE 19200
-#define BASE_ADDR 0x80002000
+#define BASE_ADDR 0x80010000
 
 int main()
 {
@@ -28,19 +28,19 @@ int main()
   uint32_t memoryValue;
 
   // Operando1
-  neorv32_cpu_store_unsigned_word(BASE_ADDR, 6);
+  neorv32_cpu_store_unsigned_word(BASE_ADDR, 850);
   // Operando2
-  neorv32_cpu_store_unsigned_word(BASE_ADDR + 0x4, 3);
+  neorv32_cpu_store_unsigned_word(BASE_ADDR + 0x4, 500);
   int i;
-  for (i=0;i<4;i++){
+  for (i=0;i<3;i++){
     // Funcion
     neorv32_cpu_store_unsigned_word(BASE_ADDR + 0x8, i);
     // Resultado
     memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR);
-    neorv32_uart0_printf("OPERANDO 1: %x\n", memoryValue);
-    memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR + 0x4);
-    neorv32_uart0_printf("OPERANDO 2: %x\n", memoryValue);
-    memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR + 0x8);
+    neorv32_uart0_printf("OPERANDO 1: %i\n", memoryValue);
+    memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR + 4);
+    neorv32_uart0_printf("OPERANDO 2: %i\n", memoryValue);
+    memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR + 8);
     
     switch (memoryValue){
     case 0:
@@ -52,12 +52,9 @@ int main()
     case 2:
       neorv32_uart0_print("FUNCION MULTIPLICACION\n");
       break;
-    case 3:
-      neorv32_uart0_print("FUNCION DIVISION\n");
-      break;
     }
-    memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR + 0xC);
-    neorv32_uart0_printf("RESULTADO: %x\n", memoryValue);
+    memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR + 12);
+    neorv32_uart0_printf("RESULTADO: %i\n", memoryValue);
     neorv32_uart0_print("/*--------------------*/\n");
   }
   return 0;

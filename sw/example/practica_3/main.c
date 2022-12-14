@@ -3,7 +3,7 @@
 #include <neorv32.h>
 
 #define BAUD_RATE 19200
-#define BASE_ADDR 0x80002000
+#define BASE_ADDR 0x80010000
 
 int main()
 {
@@ -27,6 +27,19 @@ int main()
   //program code
   uint32_t memoryValue;
   memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR);
+  neorv32_cpu_delay_ms(1000);
+  neorv32_uart0_printf("Valor en memoria inicial: %x\n",memoryValue);
+
+  memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR+4);
+  neorv32_cpu_delay_ms(1000);
+  neorv32_uart0_printf("Valor en memoria inicial: %x\n",memoryValue);
+
+  memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR+8);
+  neorv32_cpu_delay_ms(1000);
+  neorv32_uart0_printf("Valor en memoria inicial: %x\n",memoryValue);
+
+  memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR+12);
+  neorv32_cpu_delay_ms(1000);
   neorv32_uart0_printf("Valor en memoria inicial: %x\n",memoryValue);
   
   neorv32_cpu_store_unsigned_word(BASE_ADDR,0xC0FFEBED); //escribir en el primer registro de memoria

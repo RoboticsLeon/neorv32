@@ -2151,6 +2151,48 @@ package neorv32_package is
     );
   end component;
 
+  -- Component: Wishbone interconnect -----------------------------
+  -- -------------------------------------------------------------------------------------------  
+  component wb_switch is
+    generic (
+        dat_sz      : natural := 8;
+        nib_sz      : natural := 8;
+        addr_sz     : natural := 32;
+        mstr_bits   : natural := 0;
+        slv_bits    : natural := 1
+    );
+    port (
+        clk_i       : in  std_logic;
+        rst_i       : in  std_logic;
+
+        wb_mstr_cyc_i       : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+        wb_mstr_lock_i      : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+        wb_mstr_stb_i       : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+        wb_mstr_adr_i       : in  std_logic_vector((((2 ** mstr_bits) * addr_sz) - 1) downto 0);
+        wb_mstr_we_i        : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+        wb_mstr_dat_i       : in  std_logic_vector((((2 ** mstr_bits) * dat_sz) - 1) downto 0);
+        wb_mstr_sel_i       : in  std_logic_vector((((2 ** mstr_bits) * nib_sz) - 1) downto 0);
+        wb_mstr_dat_o       : out std_logic_vector((dat_sz - 1) downto 0);
+        wb_mstr_ack_o       : out std_logic;
+        wb_mstr_stall_o     : out std_logic;
+        wb_mstr_err_o       : out std_logic;
+        wb_mstr_rty_o       : out std_logic;
+    
+        wb_slv_cyc_o       : out std_logic;
+        wb_slv_lock_o      : out std_logic;
+        wb_slv_stb_o       : out std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+        wb_slv_adr_o       : out std_logic_vector((addr_sz - 1) downto 0);
+        wb_slv_we_o        : out std_logic;
+        wb_slv_dat_o       : out std_logic_vector((dat_sz - 1) downto 0);
+        wb_slv_sel_o       : out std_logic_vector((nib_sz - 1) downto 0);
+        wb_slv_dat_i       : in  std_logic_vector((((2 ** slv_bits) * dat_sz) - 1) downto 0);
+        wb_slv_ack_i       : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+        wb_slv_stall_i     : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+        wb_slv_err_i       : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+        wb_slv_rty_i       : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0)
+    );
+    end component;
+
 end neorv32_package;
 
 package body neorv32_package is

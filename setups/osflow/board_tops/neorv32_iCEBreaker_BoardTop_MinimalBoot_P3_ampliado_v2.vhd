@@ -352,7 +352,7 @@ begin
 
 driver_teclado_inst : entity neorv32.driver_teclado
   generic map(
-    WB_ADDR_DRIVER => x"80002010" -- driver address
+    WB_ADDR_DRIVER => x"80010010" -- driver address
   )
   port map(
     -- wishbone host interface --
