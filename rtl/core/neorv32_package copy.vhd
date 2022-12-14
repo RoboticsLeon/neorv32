@@ -2151,6 +2151,233 @@ package neorv32_package is
     );
   end component;
 
+  -- Component: Wishbone interconnect -----------------------------
+  -- -------------------------------------------------------------------------------------------  
+  component wb_switch is
+    generic (
+        dat_sz      : natural := 8;
+        nib_sz      : natural := 8;
+        addr_sz     : natural := 32;
+        mstr_bits   : natural := 0;
+        slv_bits    : natural := 1
+    );
+    port (
+        clk_i       : in  std_logic;
+        rst_i       : in  std_logic;
+
+        wb_mstr_cyc_i       : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+        wb_mstr_lock_i      : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+        wb_mstr_stb_i       : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+        wb_mstr_adr_i       : in  std_logic_vector((((2 ** mstr_bits) * addr_sz) - 1) downto 0);
+        wb_mstr_we_i        : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+        wb_mstr_dat_i       : in  std_logic_vector((((2 ** mstr_bits) * dat_sz) - 1) downto 0);
+        wb_mstr_sel_i       : in  std_logic_vector((((2 ** mstr_bits) * nib_sz) - 1) downto 0);
+        wb_mstr_dat_o       : out std_logic_vector((dat_sz - 1) downto 0);
+        wb_mstr_ack_o       : out std_logic;
+        wb_mstr_stall_o     : out std_logic;
+        wb_mstr_err_o       : out std_logic;
+        wb_mstr_rty_o       : out std_logic;
+    
+        wb_slv_cyc_o       : out std_logic;
+        wb_slv_lock_o      : out std_logic;
+        wb_slv_stb_o       : out std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+        wb_slv_adr_o       : out std_logic_vector((addr_sz - 1) downto 0);
+        wb_slv_we_o        : out std_logic;
+        wb_slv_dat_o       : out std_logic_vector((dat_sz - 1) downto 0);
+        wb_slv_sel_o       : out std_logic_vector((nib_sz - 1) downto 0);
+        wb_slv_dat_i       : in  std_logic_vector((((2 ** slv_bits) * dat_sz) - 1) downto 0);
+        wb_slv_ack_i       : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+        wb_slv_stall_i     : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+        wb_slv_err_i       : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+        wb_slv_rty_i       : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0)
+    );
+    end component;
+
+    component wb_slave_sel is
+      generic (
+        slv_bits    : natural := 3;
+        addr_sz     : natural := 32;
+        dat_sz      : natural := 8;
+        nib_sz      : natural := 8
+      );
+      port (
+        clk_i       : in  std_logic;
+        rst_i       : in  std_logic;
+        
+        -- Wishbone Slave Interface Implementation
+        cyc_i       : in  std_logic;
+        lock_i      : in  std_logic;
+        stb_i       : in  std_logic;
+        addr_i      : in  std_logic_vector((addr_sz - 1) downto 0);
+        we_i        : in  std_logic;
+        mstr_dat_i  : in  std_logic_vector((dat_sz - 1) downto 0);
+        sel_i       : in  std_logic_vector((nib_sz - 1) downto 0);
+        mstr_dat_o  : out std_logic_vector((dat_sz - 1) downto 0);
+        ack_o       : out std_logic;
+        rty_o       : out std_logic;
+        err_o       : out std_logic;
+        stall_o     : out std_logic;
+    
+        -- Wishbone Master Interface Implementation
+        cyc_o       : out std_logic;
+        lock_o      : out std_logic;
+        stb_o       : out std_logic;
+        addr_o      : out std_logic_vector((addr_sz - 1) downto 0);
+        we_o        : out std_logic;
+        slv_dat_o   : out std_logic_vector((dat_sz - 1) downto 0);
+        sel_o       : out std_logic_vector((nib_sz - 1) downto 0);
+        slv_dat_i   : in  std_logic_vector((dat_sz - 1) downto 0);
+        ack_i       : in  std_logic;
+        rty_i       : in  std_logic;
+        err_i       : in  std_logic;
+        stall_i     : in  std_logic;
+    
+        -- Slave Select
+        slv_sel_o   : out std_logic_vector((slv_bits - 1) downto 0)
+      );
+      end component;
+
+      component wb_slave_mux is
+        generic (
+          --
+          -- Width of data bus
+          --
+          dat_sz      : natural := 8;
+
+          --
+          -- Nibble size
+          --
+          nib_sz      : natural := 8;
+
+          --
+          -- Width of address bus
+          --
+          addr_sz     : natural := 32;
+
+          --
+          -- Number of Wishbone Slaves (in powers of 2). The actual number
+          -- of supported slaves is always 2^slv_bits. E.g. if slv_bits is
+          -- set to 3, then up to 8 slaves are supported.
+          --
+          slv_bits    : natural := 3
+          );
+        port (
+          clk_i       : in  std_logic;
+          rst_i       : in  std_logic;
+      
+          -- Wishbone Slave Interface Implementation
+          cyc_i       : in  std_logic;
+          lock_i      : in  std_logic;
+          stb_i       : in  std_logic;
+          adr_i       : in  std_logic_vector((addr_sz - 1) downto 0);
+          we_i        : in  std_logic;
+          mstr_dat_i  : in  std_logic_vector((dat_sz - 1) downto 0);
+          sel_i       : in  std_logic_vector((nib_sz - 1) downto 0);
+          mstr_dat_o   : out std_logic_vector((dat_sz - 1) downto 0);
+          ack_o       : out std_logic;
+          rty_o       : out std_logic;
+          err_o       : out std_logic;
+          stall_o     : out std_logic;
+      
+          -- Wishbone Master Interface Implementation (1 per slave)
+          cyc_o       : out std_logic;
+          lock_o      : out std_logic;
+          stb_o       : out std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+          adr_o       : out std_logic_vector((addr_sz - 1) downto 0);
+          we_o        : out std_logic;
+          slv_dat_o   : out std_logic_vector((dat_sz - 1) downto 0);
+          sel_o       : out std_logic_vector((nib_sz - 1) downto 0);
+          slv_dat_i   : in  std_logic_vector((((2 ** slv_bits) * dat_sz) - 1) downto 0);
+          ack_i       : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+          rty_i       : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+          err_i       : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+          stall_i     : in  std_logic_vector(((2 ** slv_bits) - 1) downto 0);
+      
+          -- Mux Select
+          gnt_i       : in  std_logic_vector((slv_bits - 1) downto 0)
+        );
+      end component;
+
+      component wb_master_mux is
+        generic (
+          --
+          -- Width of data bus
+          --
+          dat_sz      : natural := 8;
+              
+          --
+          -- Nibble size
+          --
+          nib_sz      : natural := 8;
+              
+          --
+          -- Width of address bus
+          --
+          addr_sz     : natural := 32;
+              
+          --
+          -- Number of Wishbone Masters
+          --
+          mstr_bits   : natural := 2
+          );
+        port (
+          clk_i       : in  std_logic;
+          rst_i       : in  std_logic;
+      
+          -- Slave Interface Implementation (i.e. signals coming from a master interface)
+          cyc_i       : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+          lock_i      : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+          stb_i       : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+      
+          adr_i       : in  std_logic_vector((((2 ** mstr_bits) * addr_sz) - 1) downto 0);
+          we_i        : in  std_logic_vector(((2 ** mstr_bits) - 1) downto 0);
+          dat_m2s_i   : in  std_logic_vector((((2 ** mstr_bits) * dat_sz) - 1) downto 0);
+          sel_i       : in  std_logic_vector((((2 ** mstr_bits) * nib_sz) - 1) downto 0);
+          
+          dat_s2m_o   : out std_logic_vector((dat_sz - 1) downto 0);
+          ack_o       : out std_logic;
+          rty_o       : out std_logic;
+          err_o       : out std_logic;
+          stall_o     : out std_logic;
+      
+          -- Master Interface Implementation (i.e. signals going to a slave interface)
+          cyc_o       : out std_logic;
+          lock_o      : out std_logic;
+          stb_o       : out std_logic;
+      
+          adr_o       : out std_logic_vector((addr_sz - 1) downto 0);
+          we_o        : out std_logic;
+          dat_m2s_o   : out std_logic_vector((dat_sz - 1) downto 0);
+          sel_o       : out std_logic_vector((nib_sz - 1) downto 0);
+      
+          dat_s2m_i   : in  std_logic_vector((dat_sz - 1) downto 0);
+          ack_i       : in  std_logic;
+          rty_i       : in  std_logic;
+          err_i       : in  std_logic;
+          stall_i     : in  std_logic;
+          
+          -- Mux Select
+          gnt_i       : in  std_logic_vector((mstr_bits - 1) downto 0);
+          busy_o      : out std_logic
+          );
+        end component;
+
+        component wb_arbiter is
+          generic (
+            mstr_bits   : natural := 2
+          );
+          port (
+            clk_i       : in  std_logic;
+            rst_i       : in  std_logic;
+        
+            busy_i      : in  std_logic;
+        
+            gnt_o       : out std_logic_vector((mstr_bits - 1) downto 0)
+          );
+          end component;
+
+
+
 end neorv32_package;
 
 package body neorv32_package is

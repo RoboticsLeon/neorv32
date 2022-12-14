@@ -27,24 +27,31 @@ int main()
   //program code
   uint32_t memoryValue;
   memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR);
-  neorv32_cpu_delay_ms(1000);
   neorv32_uart0_printf("Valor en memoria inicial: %x\n",memoryValue);
 
   memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR+4);
-  neorv32_cpu_delay_ms(1000);
   neorv32_uart0_printf("Valor en memoria inicial: %x\n",memoryValue);
 
   memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR+8);
-  neorv32_cpu_delay_ms(1000);
   neorv32_uart0_printf("Valor en memoria inicial: %x\n",memoryValue);
 
   memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR+12);
-  neorv32_cpu_delay_ms(1000);
   neorv32_uart0_printf("Valor en memoria inicial: %x\n",memoryValue);
   
-  neorv32_cpu_store_unsigned_word(BASE_ADDR,0xC0FFEBED); //escribir en el primer registro de memoria
-
+  neorv32_cpu_store_unsigned_word(BASE_ADDR,0xA1111111); //escribir en el primer registro de memoria
   memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR); 
+  neorv32_uart0_printf("Valor en memoria final: %x\n",memoryValue);
+
+  neorv32_cpu_store_unsigned_word(BASE_ADDR+4,0xB2222222); //escribir en el primer registro de memoria
+  memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR+4); 
+  neorv32_uart0_printf("Valor en memoria final: %x\n",memoryValue);
+
+  neorv32_cpu_store_unsigned_word(BASE_ADDR+8,0xC3333333); //escribir en el primer registro de memoria
+  memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR+8); 
+  neorv32_uart0_printf("Valor en memoria final: %x\n",memoryValue);
+
+  neorv32_cpu_store_unsigned_word(BASE_ADDR+12,0xD4444444); //escribir en el primer registro de memoria
+  memoryValue = neorv32_cpu_load_unsigned_word(BASE_ADDR+12); 
   neorv32_uart0_printf("Valor en memoria final: %x\n",memoryValue);
 
   return 0;

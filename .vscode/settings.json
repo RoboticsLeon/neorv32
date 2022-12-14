@@ -1,6 +1,9 @@
 {
     "files.associations": {
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "neorv32.h": "c",
+        "neorv32_cpu.h": "c",
+        "neorv32_uart.h": "c"
     },
     "files.exclude": {
         ".git*": true,

@@ -50,7 +50,7 @@ begin
     if (contador = 0) then
 
       --Lee filas
-      case to_integer(unsigned(cont_columns)) is
+      case to_integer(unsigned(cont_columns)) is 
         when 0 => --Column 0
           --Datos 1470
           p_datos(1) <= rows(0); --1

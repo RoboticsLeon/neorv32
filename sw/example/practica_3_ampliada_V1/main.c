@@ -28,8 +28,12 @@ int main()
   uint32_t memoryValue;
 
   // Operando1
+  /*neorv32_uart0_print("Operando 1: ")*/
+  /*operando1 = neorv32_uart0_scan(buffer, 20, 0)*/
   neorv32_cpu_store_unsigned_word(BASE_ADDR, 850);
   // Operando2
+  /*neorv32_uart0_print("Operando 2: ")*/
+  /*operando2 = neorv32_uart0_scan(buffer, 20, 0)*/
   neorv32_cpu_store_unsigned_word(BASE_ADDR + 0x4, 500);
   int i;
   for (i=0;i<3;i++){
