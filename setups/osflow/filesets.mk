@@ -1,6 +1,7 @@
 RTL_CORE_SRC := ../../rtl/core
 RTL_PERIPH_SRC := $(RTL_CORE_SRC)/wishbone_pheripheral
 RTL_MODULES_SRC := $(RTL_CORE_SRC)/modules
+RTL_WISHBONE_INTERCON_SRC := $(RTL_CORE_SRC)/wishbone_interconnect
 
 NEORV32_PKG := $(RTL_CORE_SRC)/neorv32_package.vhd
 
@@ -53,13 +54,16 @@ NEORV32_CORE_SRC := \
 
   NEORV32_MODULES_SRC := \
   $(RTL_MODULES_SRC)/calculadora.vhd 
+
+  NEORV32_WISHBONE_INTERCON_SRC := \
+  $(RTL_WISHBONE_INTERCON_SRC)/wb_switch.vhd
   
 
 # Before including this partial makefile, NEORV32_MEM_SRC needs to be set
 # (containing two VHDL sources: one for IMEM and one for DMEM)
 
 NEORV32_SRC := ${NEORV32_PKG} ${NEORV32_APP_SRC} ${NEORV32_MEM_ENTITIES} ${NEORV32_MEM_SRC} ${NEORV32_CORE_SRC}
-NEORV32_SRC += ${NEORV32_PERIPH_SRC} ${NEORV32_MODULES_SRC} 
+NEORV32_SRC += ${NEORV32_PERIPH_SRC} ${NEORV32_MODULES_SRC} ${NEORV32_WISHBONE_INTERCON_SRC}
  
 
 ICE40_SRC := \

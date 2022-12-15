@@ -143,7 +143,6 @@ architecture neorv32_iCEBreaker_BoardTop_MinimalBoot_rtl of neorv32_iCEBreaker_B
   -- Signals for internal IO connections
   -- -------------------------------------------------------------------------------------------
   -- Master to slave
-  signal wb_tag_m2s : std_ulogic_vector(02 downto 0); -- request tag
   signal wb_adr_m2s : std_ulogic_vector(31 downto 0); -- address
   signal wb_dat_s2m : std_ulogic_vector(31 downto 0); -- read data
   signal wb_dat_m2s : std_ulogic_vector(31 downto 0); -- write data
@@ -151,22 +150,20 @@ architecture neorv32_iCEBreaker_BoardTop_MinimalBoot_rtl of neorv32_iCEBreaker_B
   signal wb_sel_m2s : std_ulogic_vector(03 downto 0); -- byte enable
   signal wb_stb_m2s : std_ulogic;                     -- strobe
   signal wb_cyc_m2s : std_ulogic;                     -- valid cycle
-  signal wb_lock_m2s: std_ulogic;                     -- exclusive access request
   signal wb_ack_s2m : std_ulogic;                     -- transfer acknowledge
   signal wb_err_s2m : std_ulogic;                     -- transfer error
 
   -- Slave to peripheral
-  signal wb_tag_s2p : std_ulogic_vector(02 downto 0); -- request tag
   signal wb_adr_s2p : std_ulogic_vector(31 downto 0); -- address
   signal wb_dat_s2p : std_ulogic_vector(31 downto 0); -- read data
-  signal wb_dat_p2s : std_ulogic_vector(2*31 downto 0); -- write data
+  signal wb_dat_p02s : std_ulogic_vector(31 downto 0); -- write data
+  signal wb_dat_p12s : std_ulogic_vector(31 downto 0); -- write data
   signal wb_we_s2p  : std_ulogic;                     -- read/write
   signal wb_sel_s2p : std_ulogic_vector(03 downto 0); -- byte enable
-  signal wb_stb_s2p : std_ulogic(1 downto 0);                     -- strobe
-  signal wb_cyc_s2p : std_ulogic(1 downto 0);                     -- valid cycle
-  signal wb_lock_s2p: std_ulogic;                     -- exclusive access request
-  signal wb_ack_p2s : std_ulogic(1 downto 0);                     -- transfer acknowledge
-  signal wb_err_p2s : std_ulogic(1 downto 0);                     -- transfer error
+  signal wb_stb_s2p : std_ulogic_vector(1 downto 0);                     -- strobe
+  signal wb_cyc_s2p : std_ulogic_vector(1 downto 0);                     -- valid cycle
+  signal wb_ack_p2s : std_ulogic_vector(1 downto 0);                     -- transfer acknowledge
+  signal wb_err_p2s : std_ulogic_vector(1 downto 0);                     -- transfer error
 
   -- Calculadora
   signal operando_1_s : std_ulogic_vector(31 downto 0);
@@ -274,7 +271,6 @@ begin
       wb_sel_o => wb_sel_m2s, -- byte enable
       wb_stb_o => wb_stb_m2s, -- strobe
       wb_cyc_o => wb_cyc_m2s, -- valid cycle
-      wb_lock_o => wb_lock_m2s, -- exclusive access request
       wb_ack_i => wb_ack_s2m, -- transfer acknowledge
       wb_err_i => wb_err_s2m, -- transfer error
 
@@ -333,19 +329,9 @@ begin
   -- -------------------------------------------------------------------------------------------
 
   wb_switch_inst : entity neorv32.wb_switch
-    generic map(
-        dat_sz      => 8,
-        nib_sz      => 8,
-        addr_sz     => 32,
-        mstr_bits   => 0,
-        slv_bits    => 1
-    )
     port map(
-        clk_i               =>std_ulogic(iCEBreakerv10_CLK),
-        rst_i               =>std_ulogic(iCEBreakerv10_BTN_N),
 
         wb_mstr_cyc_i       => wb_cyc_m2s,
-        wb_mstr_lock_i      => wb_lock_m2s,
         wb_mstr_stb_i       => wb_stb_m2s,
         wb_mstr_adr_i       => wb_adr_m2s,
         wb_mstr_we_i        => wb_we_m2s,
@@ -353,22 +339,19 @@ begin
         wb_mstr_sel_i       => wb_sel_m2s,
         wb_mstr_dat_o       => wb_dat_s2m,
         wb_mstr_ack_o       => wb_ack_s2m,
-        wb_mstr_stall_o     => open,
         wb_mstr_err_o       => wb_err_s2m,
-        wb_mstr_rty_o       => open,
 
         wb_slv_cyc_o        => wb_cyc_s2p,
-        wb_slv_lock_o       => wb_lock_s2p,
         wb_slv_stb_o        => wb_stb_s2p,
         wb_slv_adr_o        => wb_adr_s2p,
         wb_slv_we_o         => wb_we_s2p,
         wb_slv_dat_o        => wb_dat_s2p,
         wb_slv_sel_o        => wb_sel_s2p,
-        wb_slv_dat_i        => wb_dat_p2s,
+        wb_slv_dat_i_p0     => wb_dat_p02s,
+        wb_slv_dat_i_p1     => wb_dat_p12s,
         wb_slv_ack_i        => wb_ack_p2s,
-        wb_slv_stall_i      => '0', --no creo que funcione asi
-        wb_slv_err_i        => wb_err_p2s,
-        wb_slv_rty_i        => '0' --no creo que funcione asi
+        wb_slv_err_i        => wb_err_p2s
+
     );
 
   wb_regs_inst : entity neorv32.wb_regs
@@ -381,13 +364,13 @@ begin
       wb_rstn_i => std_ulogic(iCEBreakerv10_BTN_N),                     -- reset, async, low-active
       wb_adr_i  => wb_adr_s2p, -- address
       wb_dat_i  => wb_dat_s2p, -- read data
-      wb_dat_o  => wb_dat_p2s, -- write data
+      wb_dat_o  => wb_dat_p02s, -- write data
       wb_we_i   => wb_we_s2p, -- read/write
       wb_sel_i  => wb_sel_s2p, -- byte enable
-      wb_stb_i  => wb_stb_s2p, -- strobe
-      wb_cyc_i  => wb_cyc_s2p, -- valid cycle
-      wb_ack_o  => wb_ack_p2s, -- transfer acknowledge
-      wb_err_o  => wb_err_p2s, -- transfer error 
+      wb_stb_i  => wb_stb_s2p(0), -- strobe
+      wb_cyc_i  => wb_cyc_s2p(0), -- valid cycle
+      wb_ack_o  => wb_ack_p2s(0), -- transfer acknowledge
+      wb_err_o  => wb_err_p2s(0), -- transfer error 
 
     -- calculator i/o --
       dat_reg_0 => operando_1_s, -- register 1 data output
@@ -415,13 +398,13 @@ driver_teclado_inst : entity neorv32.driver_teclado
     wb_rstn_i => std_ulogic(iCEBreakerv10_BTN_N), -- reset, async, low-active
     wb_adr_i => wb_adr_s2p, -- address
     wb_dat_i => wb_dat_s2p, -- read data
-    wb_dat_o => wb_dat_p2s, -- write data
+    wb_dat_o => wb_dat_p12s, -- write data
     wb_we_i => wb_we_s2p, -- read/write
     wb_sel_i => wb_sel_s2p, -- byte enable
-    wb_stb_i => wb_stb_s2p, -- strobe
-    wb_cyc_i => wb_cyc_s2p, -- valid cycle
-    wb_ack_o => wb_ack_p2s, -- transfer acknowledge
-    wb_err_o => wb_err_p2s, -- transfer error 
+    wb_stb_i => wb_stb_s2p(1), -- strobe
+    wb_cyc_i => wb_cyc_s2p(1), -- valid cycle
+    wb_ack_o => wb_ack_p2s(1), -- transfer acknowledge
+    wb_err_o => wb_err_p2s(1), -- transfer error 
     -- rows/columns keypad i/o --
     rows => row_s,
     columns => column_s
@@ -442,4 +425,4 @@ driver_teclado_inst : entity neorv32.driver_teclado
   row_s(2) <= iCEBreakerv10_PMOD1A_8;
   row_s(3) <= iCEBreakerv10_PMOD1A_7;
     
-end architecture;
+end architecture; 
