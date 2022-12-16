@@ -18,7 +18,7 @@
         "README.md": true,
         "sim": true,
         "sw/[bciloR]*": true,
-        "sw/example/[abcdefghijklmnoqrtsuvwyz]*": true,
+        "sw/example/[abcdefghijklmnoqrsuvwyz]*": true,
         "sw/example/processor_check": true,
         "setups/[qrvR]*": true,
         "setups/osflow/[cd.niMPRstwy]*": true,
