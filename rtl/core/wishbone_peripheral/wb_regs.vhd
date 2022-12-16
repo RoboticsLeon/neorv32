@@ -31,10 +31,10 @@ entity wb_regs is
     wb_ack_o : out std_ulogic; -- transfer acknowledge
     wb_err_o : out std_ulogic; -- transfer error
     -- calculator i/o --
-    dat_reg_0 : out std_ulogic_vector(31 downto 0); -- register 1 data output
-    dat_reg_1 : out std_ulogic_vector(31 downto 0); -- register 2 data output
+    dat_reg_0 : out std_logic_vector(31 downto 0); -- register 1 data output
+    dat_reg_1 : out std_logic_vector(31 downto 0); -- register 2 data output
     dat_reg_2 : out std_ulogic_vector(31 downto 0); -- register 3 data output
-    dat_reg_3 : in std_ulogic_vector(31 downto 0) -- register 4 data input
+    dat_reg_3 : in std_logic_vector(31 downto 0) -- register 4 data input
   );
 end wb_regs;
 
@@ -48,10 +48,10 @@ architecture wb_regs_rtl of wb_regs is
   signal access_req : std_ulogic;
 
   -- registers --
-  signal reg0, p_reg0 : std_ulogic_vector(31 downto 0);
-  signal reg1, p_reg1 : std_ulogic_vector(31 downto 0);
+  signal reg0, p_reg0 : std_logic_vector(31 downto 0);
+  signal reg1, p_reg1 : std_logic_vector(31 downto 0);
   signal reg2, p_reg2 : std_ulogic_vector(31 downto 0);
-  signal reg3 : std_ulogic_vector(31 downto 0);
+  signal reg3 : std_logic_vector(31 downto 0);
 
 begin
 
@@ -91,9 +91,9 @@ begin
       if (wb_we_i = '1' and wb_sel_i = "1111") then
         case to_integer(unsigned(wb_adr_i(index_size_f(WB_ADDR_SIZE) - 1 downto 2))) is
           when 0 =>
-            p_reg0 <= wb_dat_i;
+            p_reg0 <= std_logic_vector(wb_dat_i);
           when 1 =>
-            p_reg1 <= wb_dat_i;
+            p_reg1 <= std_logic_vector(wb_dat_i);
           when 2 =>
             p_reg2 <= wb_dat_i;
           when others =>
@@ -104,13 +104,13 @@ begin
         -- Read access
         case to_integer(unsigned(wb_adr_i(index_size_f(WB_ADDR_SIZE) - 1 downto 2))) is
           when 0 =>
-            wb_dat_o <= reg0;
+            wb_dat_o <= std_ulogic_vector(reg0);
           when 1 =>
-            wb_dat_o <= reg1;
+            wb_dat_o <= std_ulogic_vector(reg1);
           when 2 =>
             wb_dat_o <= reg2;
           when 3 =>
-            wb_dat_o <= reg3;
+            wb_dat_o <= std_ulogic_vector(reg3);
           when others =>
             null;
         end case;

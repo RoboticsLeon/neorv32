@@ -12,7 +12,7 @@ enum estados
   operando1,
   operando2,
 
-}
+};
 
 int main()
 {
@@ -65,6 +65,7 @@ int main()
     
     default:
       break;
+    }
     }
     
     

@@ -127,10 +127,10 @@ architecture neorv32_iCEBreaker_BoardTop_MinimalBoot_rtl of neorv32_iCEBreaker_B
   signal wb_ack_s2m : std_ulogic;                     -- transfer acknowledge
   signal wb_err_s2m : std_ulogic;                     -- transfer error
 
-  signal operando_1_s : std_ulogic_vector(31 downto 0);
-  signal operando_2_s : std_ulogic_vector(31 downto 0);
-  signal funcion_s    : std_ulogic_vector(31 downto 0);
-  signal resultado_s  : std_ulogic_vector(31 downto 0);
+  signal operando_1_s : std_logic_vector(31 downto 0);
+  signal operando_2_s : std_logic_vector(31 downto 0);
+  signal funcion_s    : std_logic_vector(31 downto 0);
+  signal resultado_s  : std_logic_vector(31 downto 0);
 
 
 begin

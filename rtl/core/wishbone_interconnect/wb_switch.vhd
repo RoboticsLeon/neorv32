@@ -42,10 +42,10 @@ end wb_switch;
 architecture Behavioral of wb_switch is
 begin
 
-  process (wb_mstr_adr_i,wb_slv_dat_i_p0,wb_slv_dat_i_p1,wb_mstr_stb_i,wb_mstr_cyc_i,wb_slv_ack_i,wb_slv_err_i)
+  process (wb_mstr_adr_i,wb_mstr_dat_i,wb_slv_dat_i_p0,wb_slv_dat_i_p1,wb_mstr_stb_i,wb_mstr_cyc_i,wb_slv_ack_i,wb_slv_err_i)
   begin
 
-    --Escritura
+    --Escritura p0 / p1
     wb_mstr_dat_o <= (others => '0'); 
     wb_slv_dat_o <= wb_mstr_dat_i;
 
@@ -55,6 +55,7 @@ begin
         wb_mstr_dat_o <= wb_slv_dat_i_p0;
         wb_slv_dat_o <= (others => '0');
       end if;
+      -- Comunicación
       wb_slv_stb_o(0) <= wb_mstr_stb_i;
       wb_slv_cyc_o(0) <= wb_mstr_cyc_i;
       wb_slv_stb_o(1) <= '0';
@@ -68,6 +69,7 @@ begin
         wb_mstr_dat_o <= wb_slv_dat_i_p1;
         wb_slv_dat_o <= (others => '0');
       end if;
+      -- Comunicación
       wb_slv_stb_o(1) <= wb_mstr_stb_i;
       wb_slv_cyc_o(1) <= wb_mstr_cyc_i;
       wb_slv_stb_o(0) <= '0';

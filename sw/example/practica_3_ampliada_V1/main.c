@@ -5,6 +5,8 @@
 #define BAUD_RATE 19200
 #define BASE_ADDR 0x80010000
 
+int32_t char2int(char buffer[]);
+
 int main()
 {
 
@@ -26,15 +28,21 @@ int main()
 
   // program code
   uint32_t memoryValue;
+  char buffer[25];
 
+  while(1){
   // Operando1
-  /*neorv32_uart0_print("Operando 1: ")*/
-  /*operando1 = neorv32_uart0_scan(buffer, 20, 0)*/
-  neorv32_cpu_store_unsigned_word(BASE_ADDR, 850);
+  neorv32_uart0_print("Operando 1: "); 
+  neorv32_uart0_scan(buffer, 20, 1);
+  uint32_t operando1 = (uint32_t)char2int(buffer);
+  neorv32_uart0_print("\n");
+  neorv32_cpu_store_unsigned_word(BASE_ADDR, operando1);
   // Operando2
-  /*neorv32_uart0_print("Operando 2: ")*/
-  /*operando2 = neorv32_uart0_scan(buffer, 20, 0)*/
-  neorv32_cpu_store_unsigned_word(BASE_ADDR + 0x4, 500);
+  neorv32_uart0_print("Operando 2: ");
+  neorv32_uart0_scan(buffer, 20, 1);
+  uint32_t operando2 = (uint32_t)char2int(buffer);
+  neorv32_uart0_print("\n");
+  neorv32_cpu_store_unsigned_word(BASE_ADDR + 0x4, operando2);
   int i;
   for (i=0;i<3;i++){
     // Funcion
@@ -61,5 +69,32 @@ int main()
     neorv32_uart0_printf("RESULTADO: %i\n", memoryValue);
     neorv32_uart0_print("/*--------------------*/\n");
   }
+  }
   return 0;
+}
+
+//Convert char[] to uint
+int32_t char2int(char buffer[])
+{
+  int32_t num = 0;
+  int i=0;
+  char flagSigno = 0;
+
+  while(buffer[i]!='\0')
+  {
+    if(buffer[i]=='-')
+    {
+      flagSigno = 1;
+    }
+    else
+    {
+      num = num*10+(buffer[i]-48);
+    }
+    i++;
+  }
+  if(flagSigno)
+  {
+    num *= -1;
+  }
+  return num;
 }

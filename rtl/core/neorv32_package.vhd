@@ -2111,10 +2111,10 @@ package neorv32_package is
       wb_err_o  : out std_ulogic;                      -- transfer error
 
       -- calculator i/o --
-      dat_reg_0 : out std_ulogic_vector(31 downto 0); -- register 1 data output
-      dat_reg_1 : out std_ulogic_vector(31 downto 0); -- register 2 data output
+      dat_reg_0 : out std_logic_vector(31 downto 0); -- register 1 data output
+      dat_reg_1 : out std_logic_vector(31 downto 0); -- register 2 data output
       dat_reg_2 : out std_ulogic_vector(31 downto 0); -- register 3 data output
-      dat_reg_3 : in  std_ulogic_vector(31 downto 0)  -- register 4 data input
+      dat_reg_3 : in  std_logic_vector(31 downto 0)  -- register 4 data input
     );
   end component;  
 
@@ -2122,10 +2122,10 @@ package neorv32_package is
   -- -------------------------------------------------------------------------------------------
   component calculadora
     port (
-      operando_1 : in STD_ULOGIC_VECTOR(9 downto 0);
-      operando_2 : in STD_ULOGIC_VECTOR(9 downto 0);
+      operando_1 : in STD_LOGIC_VECTOR(9 downto 0);
+      operando_2 : in STD_LOGIC_VECTOR(9 downto 0);
       funcion    : in STD_ULOGIC_VECTOR(1 downto 0);
-      resultado  : out STD_ULOGIC_VECTOR(31 downto 0));
+      resultado  : out STD_LOGIC_VECTOR(31 downto 0));
   end component;
 
   component driver_teclado
