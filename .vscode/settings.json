@@ -5,28 +5,5 @@
         "neorv32_cpu.h": "c",
         "neorv32_uart.h": "c"
     },
-    "files.exclude": {
-        ".git*": true,
-        ".mailmap": true,
-        "basic_comands.sh": true,
-        "CHANGELOG.md": true,
-        "CODE_OF_CONDUCT.md": true,
-        "CONTRIBUTING.md": true,
-        "do.py": true,
-        "docs": true,
-        "LICENSE": true,
-        "README.md": true,
-        "sim": true,
-        "sw/[bciloR]*": true,
-        "sw/example/[abcdefghijklmnoqrtsuvwyz]*": true,
-        "sw/example/processor_check": true,
-        "setups/[qrvR]*": true,
-        "setups/osflow/[cd.niMPRstwy]*": true,
-        "setups/osflow/boards": true,
-        "setups/osflow/board_tops/neorv32_[AFOU]*": true,
-        "setups/osflow/board_tops/neorv32_*Sugar*": true,
-        "rtl/[pstR]*": true,
-        "rtl/core/neorv32_[abcdefghijklmnoqrtsuvwxyz]*": true,
-        "rtl/core/neorv32_pwm*": true
-    }
+
 }

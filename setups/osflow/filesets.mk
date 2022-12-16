@@ -1,5 +1,5 @@
 RTL_CORE_SRC := ../../rtl/core
-RTL_PERIPH_SRC := $(RTL_CORE_SRC)/wishbone_pheripheral
+RTL_PERIPH_SRC := $(RTL_CORE_SRC)/wishbone_peripheral
 RTL_MODULES_SRC := $(RTL_CORE_SRC)/modules
 RTL_WISHBONE_INTERCON_SRC := $(RTL_CORE_SRC)/wishbone_interconnect
 
