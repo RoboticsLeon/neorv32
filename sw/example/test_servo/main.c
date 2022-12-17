@@ -38,6 +38,6 @@ int main()
   neorv32_pwm_setup((uint8_t)5);
   while (1)
   {
-    neorv32_pwm_set(0,)
+    neorv32_pwm_set(0,);
   }
 }
