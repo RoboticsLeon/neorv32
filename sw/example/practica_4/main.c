@@ -152,7 +152,7 @@ uint32_t cambia_operando(int modo)
       {
         if (tecla <= 9)
         {
-          flagKeep=0;
+          flagKeep = 0;
           if ((((int)operando * 10 + (int)tecla) > 511))
           {
             neorv32_uart0_print("Numero excede limites \n");
@@ -160,7 +160,7 @@ uint32_t cambia_operando(int modo)
           }
           else
             operando = operando * 10 + (uint32_t)tecla;
-          neorv32_uart0_printf("Operando actual: %i\n",signo*operando);
+          neorv32_uart0_printf("Operando actual: %i\n", signo * operando);
         }
         else if ((((tecla != 14) && (modo == 0)) || ((tecla != 15) && (modo == 1))) && (tecla != 10))
         {
@@ -171,24 +171,35 @@ uint32_t cambia_operando(int modo)
           if (signo == 1)
           {
             signo = -1;
-            neorv32_uart0_print("El numero se considerara negativo \n");
           }
           else
           {
             signo = 1;
-            neorv32_uart0_print("El numero se considerara positivo \n");
+          }
+          neorv32_uart0_print("Operando actual: ");
+          if (flagKeep == 1)
+          {
+            if (modo == 1)
+              neorv32_uart0_printf("%i \n", signo * operando1);
+            else
+              neorv32_uart0_printf("%i \n", signo * operando2);
+          }
+          else
+          {
+            neorv32_uart0_printf("%i \n",signo*operando);
           }
         }
         else
         {
           datos_keypad_anterior = datos_keypad;
-          if(flagKeep==1)
+          if (flagKeep == 1)
           {
-            if(modo==1)
+            if (modo == 1)
               operando = operando1;
-            else operando = operando2;
+            else
+              operando = operando2;
           }
-          return operando*signo;
+          return operando * signo;
         }
       }
       mask = mask << 1;
