@@ -4,12 +4,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity wb_switch is
 port (
 
-    --
     -- Whishbone Master Interface
-    --
-    -- The Signal Directions are inverted as they are coming from/going to
-    -- the masters into/from the switch/arbiter logic.
-    --
+
     wb_mstr_adr_i       : in  std_ulogic_vector(31 downto 0);
     wb_mstr_dat_i       : in  std_ulogic_vector(31 downto 0);
     wb_mstr_dat_o       : out std_ulogic_vector(31 downto 0);
@@ -20,12 +16,8 @@ port (
     wb_mstr_ack_o       : out std_ulogic;
     wb_mstr_err_o       : out std_ulogic;
 
-    --
     -- Whishbone Slave Interface
-    --
-    -- The Signal Directions are inverted as they are coming from/going to
-    -- the masters into/from the switch/arbiter logic.
-    --
+
     wb_slv_adr_o       : out std_ulogic_vector(31 downto 0);
     wb_slv_dat_o       : out std_ulogic_vector(31 downto 0);
     wb_slv_dat_i_p0    : in  std_ulogic_vector(31 downto 0);

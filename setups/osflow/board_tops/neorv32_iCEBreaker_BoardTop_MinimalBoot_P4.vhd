@@ -356,7 +356,7 @@ begin
 
   wb_regs_inst : entity neorv32.wb_regs
     generic map(
-      WB_ADDR_BASE => x"80002000", --mirando dmem_size=8*1024 bytes -> start 80millones + 8192 -> en hex x"..." (primer hueco de memoria libre)
+      WB_ADDR_BASE => x"80010000", --mirando dmem_size=8*1024 bytes -> start 80millones + 8192 -> en hex x"..." (primer hueco de memoria libre)
       WB_ADDR_SIZE => 16          -- tenemos 4 registros (mirar wb_regs.vhd) disponibles de 32 bits (4 bytes) cada uno -> 4x4=16 bytes de memoria necesarios, acceso de escritura/lecutra mínimo de 4 bytes
     )
     port map(
