@@ -91,8 +91,8 @@ begin
     else
       wb_ack_o <= '0';
     end if;
-
   end process;
+  
   sync : process (wb_clk_i, wb_rstn_i)
   begin
     -- Inicialización

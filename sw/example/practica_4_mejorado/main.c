@@ -79,14 +79,14 @@ int main()
           case 0xF: // Selección Operando 1
             neorv32_uart0_print("OPERANDO 1 SELECCIONADO\n");
             datos_keypad_anterior = datos_keypad;
-            operando1 = cambia_operando(1); 
+            operando1 = cambia_operando(1); // función para cambiar el registro correspondiente al operando 1 o 2 (paso la dirección correspondiente)
             neorv32_cpu_store_unsigned_word(BASE_ADDR, operando1);
             neorv32_uart0_printf("Operando 1: %i\n", operando1);
             goto START_AGAIN;
           case 0xE: // Selección Operando 2
             neorv32_uart0_print("OPERANDO 2 SELECCIONADO\n");
             datos_keypad_anterior = datos_keypad;
-            operando2 = cambia_operando(0); 
+            operando2 = cambia_operando(0); // función para cambiar el registro correspondiente al operando 1 o 2 (paso la dirección correspondiente)
             neorv32_cpu_store_unsigned_word(BASE_ADDR + 4, operando2);
             neorv32_uart0_printf("Operando 2: %i\n", operando2);
             goto START_AGAIN;
@@ -186,7 +186,7 @@ uint32_t cambia_operando(int modo)
           }
           else
           {
-            neorv32_uart0_printf("%i \n", signo * operando);
+            neorv32_uart0_printf("%i \n",signo*operando);
           }
         }
         else
