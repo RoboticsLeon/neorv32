@@ -29,18 +29,17 @@ int main()
   {
     uint32_t datos_keypad;
     datos_keypad = neorv32_cpu_load_unsigned_word(WB_ADDR_DRIVER);
-    neorv32_uart0_printf("Traza: %x\n", datos_keypad);
-    // uint32_t resultado = 0;
-    // uint32_t mask = 1; //0b000...0001 inicialmente
-    // for (uint8_t tecla = 0; tecla < 16; tecla++)
-    // {
-    //   resultado = (~datos_keypad) & mask;
-    //   if (resultado == mask)
-    //   {
-    //     neorv32_uart0_printf("Tecla: %x\n", tecla);
-    //   }
-    //   mask = mask << 1;
-    // }
+    uint32_t resultado = 0;
+    uint32_t mask = 1; //0b000...0001 inicialmente
+    for (uint8_t tecla = 0; tecla < 16; tecla++)
+    {
+      resultado = (~datos_keypad) & mask;
+      if (resultado == mask)
+      {
+        neorv32_uart0_printf("Tecla: %x\n", tecla);
+      }
+      mask = mask << 1;
+    }
   }
 
   return 0;
