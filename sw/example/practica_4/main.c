@@ -8,8 +8,8 @@
 
 uint32_t datos_keypad = 0xffff;
 uint32_t datos_keypad_anterior = 0xffff;
-uint32_t operando1 = 0;
-uint32_t operando2 = 0;
+int32_t operando1 = 0;
+int32_t operando2 = 0;
 
 uint32_t cambia_operando(int modo);
 
@@ -33,7 +33,7 @@ int main()
   neorv32_uart0_print("Starting Keypad Calculator (Complete System)\n");
 
   // program code
-  uint32_t resultado = 0;
+  int32_t resultado = 0;
   uint32_t mask = 1; // 0b000...0001 inicialmente
   uint32_t tecla_pulsada = 0;
   uint32_t funcion = 0;
@@ -94,7 +94,10 @@ int main()
             neorv32_uart0_print("RESULTADO:\n");
             funcion = neorv32_cpu_load_unsigned_word(BASE_ADDR + 8);
             resultado = neorv32_cpu_load_unsigned_word(BASE_ADDR + 12);
-            neorv32_uart0_printf("%i ", operando1);
+            if (operando1 < 0)
+              neorv32_uart0_printf("(%i) ", operando1);
+            else
+              neorv32_uart0_printf("%i ", operando1);
             switch (funcion)
             {
             case 0:
@@ -107,7 +110,11 @@ int main()
               neorv32_uart0_print("x");
               break;
             }
-            neorv32_uart0_printf(" %i = %i \n", operando2, resultado);
+            if (operando2 < 0)
+              neorv32_uart0_printf(" (%i) ", operando2);
+            else
+              neorv32_uart0_printf(" %i ", operando2);
+            neorv32_uart0_printf("= %i \n", resultado);
             neorv32_uart0_print("*-----------------------------------------*\n");
             break;
           default:
@@ -127,9 +134,10 @@ int main()
 
 uint32_t cambia_operando(int modo)
 {
-  uint32_t operando=-1;
+  int32_t operando = 0;
   uint32_t mask = 1;
-  char flagSigno=0;
+  signed char signo = 1;
+  char flagKeep = 1;
 
   while (1)
   {
@@ -144,7 +152,7 @@ uint32_t cambia_operando(int modo)
       {
         if (tecla <= 9)
         {
-          if(operando==-1) operando=0;
+          flagKeep=0;
           if ((((int)operando * 10 + (int)tecla) > 511))
           {
             neorv32_uart0_print("Numero excede limites \n");
@@ -152,49 +160,35 @@ uint32_t cambia_operando(int modo)
           }
           else
             operando = operando * 10 + (uint32_t)tecla;
-          neorv32_uart0_print("Operando actual: ");
-          if(flagSigno==1)
-            neorv32_uart0_printf("%i\n",-operando);
-          else neorv32_uart0_printf("%i\n",operando);
-
+          neorv32_uart0_printf("Operando actual: %i\n",signo*operando);
         }
-        else if ((((tecla != 14) && (modo == 0)) || ((tecla != 15) && (modo == 1))) && (tecla!=10))
+        else if ((((tecla != 14) && (modo == 0)) || ((tecla != 15) && (modo == 1))) && (tecla != 10))
         {
           neorv32_uart0_print("Tecla no valida \n");
         }
-        else if(tecla==10) //si se pulsa A se invierte el signo del operando
+        else if (tecla == 10) // si se pulsa A se invierte el signo del operando
         {
-          if(flagSigno==0)
+          if (signo == 1)
           {
-            flagSigno=1;
+            signo = -1;
             neorv32_uart0_print("El numero se considerara negativo \n");
           }
           else
           {
-            flagSigno=0;
+            signo = 1;
             neorv32_uart0_print("El numero se considerara positivo \n");
-          }  
-          if(modo==1) operando = operando1;
-          else operando = operando2;
-
+          }
         }
         else
         {
           datos_keypad_anterior = datos_keypad;
-          if(operando==-1)
+          if(flagKeep==1)
           {
             if(modo==1)
-              return operando1;
-            else return operando2;
+              operando = operando1;
+            else operando = operando2;
           }
-          else
-          {
-            if(flagSigno==1)
-              return -operando;
-            else
-              return operando;
-          }
-
+          return operando*signo;
         }
       }
       mask = mask << 1;
